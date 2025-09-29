@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import sqrt
 from typing import Dict
 
-from scipy.stats import norm
+from scipy.stats import norm  # type: ignore[import-untyped]
 
 from backend.data.models import (
     InventoryMethod,

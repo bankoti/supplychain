@@ -46,7 +46,7 @@ export function DemandPage(): JSX.Element {
   const chartData = useMemo(() => {
     if (!mutation.data) {
       return defaultSeries.map((value, index) => ({
-        period: T,
+        period: `T${index + 1}`,
         actual: value,
       }))
     }
@@ -60,7 +60,7 @@ export function DemandPage(): JSX.Element {
     const combined = [...base, ...forecast]
 
     return combined.map((value, index) => ({
-      period: T,
+      period: `T${index + 1}`,
       actual: index < base.length ? base[index] : null,
       forecast: index >= base.length ? value : null,
     }))

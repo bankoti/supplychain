@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Dict, List, Sequence, Tuple
 
 import numpy as np
-from statsmodels.tsa.holtwinters import ExponentialSmoothing, SimpleExpSmoothing
+from statsmodels.tsa.holtwinters import ExponentialSmoothing, SimpleExpSmoothing  # type: ignore[import-untyped]
 
 from backend.data.models import ForecastMethod, ForecastMetrics, ForecastResponse
 

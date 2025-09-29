@@ -10,7 +10,7 @@ export function DashboardPage(): JSX.Element {
   })
 
   if (isLoading) {
-    return <p>Loading KPI summary…</p>
+    return <p>Loading KPI summary.</p>
   }
 
   if (isError || data === undefined) {
@@ -18,10 +18,10 @@ export function DashboardPage(): JSX.Element {
   }
 
   const entries = [
-    { label: 'Customer Service Level', value: ${(data.customer_service_level * 100).toFixed(1)}% },
-    { label: 'Fill Rate', value: ${(data.fill_rate * 100).toFixed(1)}% },
+    { label: 'Customer Service Level', value: `${(data.customer_service_level * 100).toFixed(1)}%` },
+    { label: 'Fill Rate', value: `${(data.fill_rate * 100).toFixed(1)}%` },
     { label: 'Inventory Turns', value: data.inventory_turns.toFixed(2) },
-    { label: 'Holding Cost', value: $ },
+    { label: 'Holding Cost', value: `$${data.holding_cost.toFixed(2)}` },
   ]
 
   return (

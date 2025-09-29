@@ -26,8 +26,7 @@ export function Layout(): JSX.Element {
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  
-av-link
+                  `nav-link${isActive ? ' nav-link--active' : ''}`
                 }
                 end={item.to === '/'}
               >

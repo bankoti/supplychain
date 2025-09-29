@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
@@ -8,8 +8,11 @@ __pycache__/
 venv/
 ENV/
 env/
+
+# Environment files
 .env
 *.env
+.env.*
 
 # Distribution / packaging
 .Python
@@ -27,10 +30,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+pip-wheel-metadata/
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos
 *.manifest
 *.spec
 
@@ -45,28 +47,36 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-*.log
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Jupyter Notebook checkpoints
+# Notebooks
 .ipynb_checkpoints
 
-# VS Code settings
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend build artifacts
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.eslintcache
+*.tsbuildinfo
+
+# Editor settings
 .vscode/
 *.code-workspace
 
-# macOS / Windows
+# OS folders
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Logs
-*.log
-
-# Local data
+# Local databases / data dumps
 *.sqlite3
 *.db
