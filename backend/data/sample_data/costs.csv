@@ -1,0 +1,1 @@
+product_id,unit_cost,holding_cost_per_unit,stockout_cost,avg_inventory_units,service_level_target `nSKU-001,25,2.5,15,500,0.96`nSKU-002,15,1.5,10,300,0.94 
