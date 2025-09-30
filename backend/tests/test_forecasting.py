@@ -17,3 +17,9 @@ def test_ets_forecast_produces_metrics(sample_series) -> None:
     assert len(response.forecast) == 4
     assert response.metrics.mase >= 0
     assert not math.isnan(response.metrics.bias)
+
+
+def test_arima_forecast_generates_values(sample_series) -> None:
+    response = run_forecast(ForecastMethod.ARIMA, sample_series, horizon=4)
+    assert len(response.forecast) == 4
+    assert response.model_summary["sigma2"] >= 0

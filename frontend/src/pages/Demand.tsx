@@ -1,6 +1,6 @@
-import type { ChangeEvent, FormEvent, JSX } from 'react'
-import { useMemo, useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import type { ChangeEvent, FormEvent, JSX } from "react"
+import { useMemo, useState } from "react"
+import { useMutation } from "@tanstack/react-query"
 import {
   Legend,
   Line,
@@ -9,19 +9,21 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts'
+} from "recharts"
 
-import { runForecast } from '../lib/api'
+import { runForecast } from "../lib/api"
+
+type ForecastMethodOption = "naive" | "ets" | "croston" | "arima"
 
 const defaultSeries = [
   120, 130, 125, 140, 150, 145, 160, 170, 165, 175, 180, 185,
 ]
 
 export function DemandPage(): JSX.Element {
-  const [seriesInput, setSeriesInput] = useState<string>(defaultSeries.join(', '))
-  const [method, setMethod] = useState<'naive' | 'ets' | 'croston'>('naive')
+  const [seriesInput, setSeriesInput] = useState<string>(defaultSeries.join(", "))
+  const [method, setMethod] = useState<ForecastMethodOption>("naive")
   const [horizon, setHorizon] = useState<number>(4)
-  const [error, setError] = useState<string>('')
+  const [error, setError] = useState<string>("")
 
   const mutation = useMutation({
     mutationFn: runForecast,
@@ -30,16 +32,21 @@ export function DemandPage(): JSX.Element {
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     const parsed = seriesInput
-      .split(',')
+      .split(",")
       .map((value) => Number.parseFloat(value.trim()))
       .filter((value) => Number.isFinite(value))
 
     if (parsed.length <= horizon) {
-      setError('Series must include more observations than the forecast horizon.')
+      setError("Series must include more observations than the forecast horizon.")
       return
     }
 
-    setError('')
+    if (method === "arima" && parsed.length < 8) {
+      setError("ARIMA needs at least 8 observations for a stable fit.")
+      return
+    }
+
+    setError("")
     mutation.mutate({ method, series: parsed, horizon })
   }
 
@@ -53,7 +60,7 @@ export function DemandPage(): JSX.Element {
 
     const { forecast } = mutation.data
     const base = seriesInput
-      .split(',')
+      .split(",")
       .map((value) => Number.parseFloat(value.trim()))
       .filter((value) => Number.isFinite(value))
 
@@ -66,11 +73,16 @@ export function DemandPage(): JSX.Element {
     }))
   }, [mutation.data, seriesInput])
 
+  const modelSummaryEntries = useMemo(() => {
+    if (!mutation.data) return []
+    return Object.entries(mutation.data.model_summary ?? {})
+  }, [mutation.data])
+
   return (
     <section>
       <h1 className="section-title">Demand Forecasting Sandbox</h1>
       <form className="form-grid" onSubmit={handleSubmit}>
-        <div className="field" style={{ gridColumn: '1 / -1' }}>
+        <div className="field" style={{ gridColumn: "1 / -1" }}>
           <label htmlFor="series">Demand History (comma-separated)</label>
           <textarea
             id="series"
@@ -87,12 +99,13 @@ export function DemandPage(): JSX.Element {
             id="method"
             value={method}
             onChange={(event: ChangeEvent<HTMLSelectElement>) => {
-              setMethod(event.target.value as typeof method)
+              setMethod(event.target.value as ForecastMethodOption)
             }}
           >
-            <option value="naive">Naïve</option>
+            <option value="naive">Naive</option>
             <option value="ets">Exponential Smoothing</option>
             <option value="croston">Croston (intermittent)</option>
+            <option value="arima">ARIMA (1,1,1)</option>
           </select>
         </div>
         <div className="field">
@@ -109,17 +122,31 @@ export function DemandPage(): JSX.Element {
           />
         </div>
         <button disabled={mutation.isPending} type="submit">
-          {mutation.isPending ? 'Running…' : 'Run Forecast'}
+          {mutation.isPending ? "Running…" : "Run Forecast"}
         </button>
       </form>
-      {error !== '' ? <p role="alert">{error}</p> : null}
+      {error !== "" ? <p role="alert">{error}</p> : null}
       {mutation.data ? (
-        <div className="card" style={{ marginTop: '1.5rem' }}>
-          <h2 className="card-label">Accuracy Metrics</h2>
-          <p>MAPE: {mutation.data.metrics.mape.toFixed(2)}%</p>
-          <p>MASE: {mutation.data.metrics.mase.toFixed(2)}</p>
-          <p>Bias: {mutation.data.metrics.bias.toFixed(2)}</p>
-        </div>
+        <>
+          <div className="card" style={{ marginTop: "1.5rem" }}>
+            <h2 className="card-label">Accuracy Metrics</h2>
+            <p>MAPE: {mutation.data.metrics.mape.toFixed(2)}%</p>
+            <p>MASE: {mutation.data.metrics.mase.toFixed(2)}</p>
+            <p>Bias: {mutation.data.metrics.bias.toFixed(2)}</p>
+          </div>
+          {modelSummaryEntries.length > 0 ? (
+            <div className="card" style={{ marginTop: "1rem" }}>
+              <h2 className="card-label">Model Summary</h2>
+              <ul>
+                {modelSummaryEntries.map(([key, value]) => (
+                  <li key={key}>
+                    <strong>{key}:</strong> {typeof value === "number" ? value.toFixed(4) : String(value)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </>
       ) : null}
       <div style={{ height: 320 }}>
         <ResponsiveContainer>

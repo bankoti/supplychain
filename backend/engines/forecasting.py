@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Dict, List, Sequence, Tuple
 
 import numpy as np
+from statsmodels.tsa.arima.model import ARIMA  # type: ignore[import-untyped]
 from statsmodels.tsa.holtwinters import ExponentialSmoothing, SimpleExpSmoothing  # type: ignore[import-untyped]
 
 from backend.data.models import ForecastMethod, ForecastMetrics, ForecastResponse
@@ -57,6 +58,22 @@ def _croston_forecast(train: np.ndarray, horizon: int) -> Tuple[List[float], Dic
     return [float(forecast_value)] * horizon, {"alpha": alpha}
 
 
+def _arima_forecast(train: np.ndarray, horizon: int) -> Tuple[List[float], Dict[str, float]]:
+    if train.size < 4:
+        msg = "ARIMA requires at least four observations."
+        raise ValueError(msg)
+    model = ARIMA(train, order=(1, 1, 1))
+    fit = model.fit()
+    forecast = fit.forecast(horizon)
+
+    summary = {
+        "sigma2": float(getattr(fit, "sigma2", 0.0)),
+        "ar1": float(fit.arparams[0]) if getattr(fit, "arparams", np.array([])).size else 0.0,
+        "ma1": float(fit.maparams[0]) if getattr(fit, "maparams", np.array([])).size else 0.0,
+    }
+    return forecast.tolist(), summary
+
+
 def _calculate_metrics(
     train: np.ndarray,
     actual: np.ndarray,
@@ -89,6 +106,8 @@ def run_forecast(method: ForecastMethod, series: Sequence[float], horizon: int) 
         forecast, summary = _ets_forecast(train, horizon)
     elif method is ForecastMethod.CROSTON:
         forecast, summary = _croston_forecast(train, horizon)
+    elif method is ForecastMethod.ARIMA:
+        forecast, summary = _arima_forecast(train, horizon)
     else:
         msg = f"Unsupported forecast method: {method}"
         raise ValueError(msg)

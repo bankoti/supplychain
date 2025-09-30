@@ -10,6 +10,7 @@ class ForecastMethod(str, Enum):
     NAIVE = "naive"
     ETS = "ets"
     CROSTON = "croston"
+    ARIMA = "arima"
 
 
 class ForecastMetrics(BaseModel):
@@ -70,6 +71,26 @@ class InventoryPolicyRequest(BaseModel):
 class InventoryPolicyResponse(BaseModel):
     policy: Dict[str, float]
     notes: str = ""
+
+
+class InventorySimulationRequest(BaseModel):
+    demand_profile: List[float] = Field(..., min_length=1)
+    initial_inventory: float = Field(..., ge=0)
+    reorder_point: float
+    order_quantity: float = Field(..., gt=0)
+    lead_time: int = Field(..., ge=0)
+    seed: Optional[int] = None
+
+
+class StockoutEventModel(BaseModel):
+    time: float
+    shortfall: float
+
+
+class InventorySimulationResponse(BaseModel):
+    demand_served: float
+    demand_lost: float
+    stockouts: List[StockoutEventModel]
 
 
 class BullwhipDiagnosticsRequest(BaseModel):
