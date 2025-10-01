@@ -118,3 +118,43 @@ class KPIResponse(BaseModel):
     fill_rate: float
     inventory_turns: float
     holding_cost: float
+class TaskStatus(str, Enum):
+    TODO = "todo"
+    IN_PROGRESS = "in_progress"
+    DONE = "done"
+
+
+class TaskModel(BaseModel):
+    id: str
+    title: str = Field(..., min_length=1)
+    status: TaskStatus = TaskStatus.TODO
+    description: Optional[str] = None
+
+
+class PlanModel(BaseModel):
+    id: str
+    name: str = Field(..., min_length=1)
+    description: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+    tasks: List[TaskModel] = Field(default_factory=list)
+
+    @property
+    def progress(self) -> float:
+        total = len(self.tasks)
+        if total == 0:
+            return 0.0
+        completed = sum(1 for task in self.tasks if task.status is TaskStatus.DONE)
+        return completed / total
+
+
+class PlanCreateRequest(BaseModel):
+    name: str = Field(..., min_length=1)
+    description: Optional[str] = None
+    tasks: List[TaskModel] = Field(default_factory=list)
+
+
+class PlanUpdateRequest(BaseModel):
+    name: Optional[str] = Field(default=None, min_length=1)
+    description: Optional[str] = None
+    tasks: Optional[List[TaskModel]] = None

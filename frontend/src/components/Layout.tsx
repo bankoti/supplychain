@@ -7,7 +7,8 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { to: '/', label: 'Dashboard' },
+  { to: '/planner', label: 'Planner' },
+  { to: '/dashboard', label: 'Dashboard' },
   { to: '/demand', label: 'Demand' },
   { to: '/inventory', label: 'Inventory' },
   { to: '/bullwhip', label: 'Bullwhip' },
@@ -28,7 +29,7 @@ export function Layout(): JSX.Element {
                 className={({ isActive }) =>
                   `nav-link${isActive ? ' nav-link--active' : ''}`
                 }
-                end={item.to === '/'}
+                end
               >
                 {item.label}
               </NavLink>

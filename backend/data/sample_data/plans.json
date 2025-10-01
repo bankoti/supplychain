@@ -1,0 +1,41 @@
+[
+  {
+    "id": "plan-001",
+    "name": "Foundational Setup",
+    "description": "Establish baseline capabilities across forecasting, inventory, and analytics.",
+    "created_at": "2025-09-01T00:00:00Z",
+    "updated_at": "2025-09-01T00:00:00Z",
+    "tasks": [
+      {
+        "id": "task-001",
+        "title": "Bootstrap repository and virtual environments",
+        "status": "done",
+        "description": "Makefile, README, linting, CI scaffolding"
+      },
+      {
+        "id": "task-002",
+        "title": "Expose core FastAPI routes",
+        "status": "done",
+        "description": "Forecast, inventory, bullwhip, KPI endpoints"
+      },
+      {
+        "id": "task-003",
+        "title": "Stand up React front-end shell",
+        "status": "done",
+        "description": "Navigation, TanStack Query, initial pages"
+      },
+      {
+        "id": "task-004",
+        "title": "Add forecasting depth with ARIMA",
+        "status": "done",
+        "description": "Backend ARIMA path + demand UI hook"
+      },
+      {
+        "id": "task-005",
+        "title": "Introduce inventory simulation",
+        "status": "done",
+        "description": "Simulation API + What-if integration"
+      }
+    ]
+  }
+]

@@ -13,21 +13,23 @@ SupplyChainOS is an open-source learning and experimentation platform for modern
 
 ## Architecture Overview
 - **Backend:** Python 3.11, FastAPI, Pydantic v2, OR-Tools, PuLP, statsmodels, scikit-learn, numpy, pandas, SimPy. DuckDB powers local analytics with optional PostgreSQL via SQLAlchemy and psycopg2-binary.
-- **Frontend:** React + TypeScript + Vite, shadcn/ui component system, recharts visualizations, TanStack Query for data fetching.
+- **Frontend:** React + TypeScript + Vite, shadcn/ui component system, recharts visualizations, TanStack Query for data fetching, planner UI for project tracking.
 - **Data Layer:** CSV and Parquet ingestion pipelines backed by DuckDB. Adapters expose typed data sources and optional sinks (e.g., PostgreSQL).
 - **Tooling:** Docker Compose for containerized development, Makefile-driven workflows, pytest + httpx for integration tests, Ruff + mypy for linting and static typing.
 
 ## Implementation Plan & Status
 | Area | Scope | Status | Notes |
 | ---- | ----- | ------ | ----- |
-| Backend API | FastAPI app, forecasting/inventory/bullwhip/KPI routers, data models, sample CSV loaders | ✅ Completed | `make api` serves endpoints; CORS enabled for Vite dev server |
-| Analytics Engines | Forecasting (naive/ETS/Croston), inventory policies (EOQ, (Q,R), newsvendor), bullwhip diagnostics | ✅ Completed | Backed by pytest unit coverage |
-| Optimization & Simulation | PuLP make-to-order LP, SimPy single-item inventory simulation | ✅ Completed | Engine modules + pytest coverage (`test_optimization.py`, `test_simulation.py`) |
-| Frontend Shell | React + Vite scaffold, layout & navigation, TanStack Query wiring | ✅ Completed | Pages for Dashboard, Demand, Inventory, Bullwhip, What-if render successfully |
-| Data Samples | Products, locations, demand, lead times, cost baseline | ✅ Completed | Located under `backend/data/sample_data/` |
-| QA & Tooling | `make test`, `make lint`, `.gitignore`, CORS fixes | ✅ Completed | Pytest + mypy + Ruff pass locally |
-| Forecasting Depth (ARIMA) | Added ARIMA option to API + Demand UI support | ✅ Completed | Statsmodels ARIMA path with metrics + new test coverage |
-| Inventory Depth (Simulation) | Inventory simulation API + What-if UI integration | ✅ Completed | `/inventory/simulate` endpoint + React form & results table |## 12-Week Learning & Build Roadmap
+| Backend API | FastAPI app, forecasting/inventory/bullwhip/KPI routers, data models, sample CSV loaders | Complete | `make api` serves endpoints; CORS enabled for Vite dev server |
+| Analytics Engines | Forecasting (naive/ETS/Croston), inventory policies (EOQ, (Q,R), newsvendor), bullwhip diagnostics | Complete | Backed by pytest unit coverage |
+| Optimization & Simulation | PuLP make-to-order LP, SimPy single-item inventory simulation | Complete | Engine modules + pytest coverage (`test_optimization.py`, `test_simulation.py`) |
+| Planning Control Tower | Planner dashboard, plan CRUD API, progress tracking UI | Complete | `/plans` REST endpoints + React planner start page |
+| Frontend Shell | React + Vite scaffold, layout & navigation, TanStack Query wiring | Complete | Pages for Planner, Dashboard, Demand, Inventory, Bullwhip, What-if |
+| Data Samples | Products, locations, demand, lead times, cost baseline | Complete | Located under `backend/data/sample_data/` |
+| QA & Tooling | `make test`, `make lint`, `.gitignore`, CORS fixes | Complete | Pytest + mypy + Ruff pass locally |
+| Forecasting Depth (ARIMA) | Added ARIMA option to API + Demand UI support | Complete | Statsmodels ARIMA path with metrics + new test coverage |
+| Inventory Depth (Simulation) | Inventory simulation API + What-if UI integration | Complete | `/inventory/simulate` endpoint + React simulation form |
+## 12-Week Learning & Build Roadmap
 | Week | Learning Focus (Coursera Alignment) | Build Focus |
 | ---- | ----------------------------------- | ----------- |
 | 1 | Supply Chain Analytics overview | Scaffold repo, CI-ready tooling, sample data ingestion |
