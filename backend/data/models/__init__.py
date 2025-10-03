@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator, model_validator
 
 
 class ForecastMethod(str, Enum):
@@ -44,6 +44,8 @@ class ForecastRequest(BaseModel):
 
 
 class ForecastResponse(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     forecast: List[float]
     metrics: ForecastMetrics
     model_summary: Dict[str, float] = Field(default_factory=dict)
@@ -158,3 +160,124 @@ class PlanUpdateRequest(BaseModel):
     name: Optional[str] = Field(default=None, min_length=1)
     description: Optional[str] = None
     tasks: Optional[List[TaskModel]] = None
+
+
+class SupplyPlanStatus(str, Enum):
+    DRAFT = "draft"
+    ACTIVE = "active"
+    ARCHIVED = "archived"
+
+
+class DemandPeriodModel(BaseModel):
+    period: str
+    forecast_units: float
+    confidence: Optional[float] = None
+    last_updated: Optional[str] = None
+
+
+class InventoryPolicyModel(BaseModel):
+    policy_type: str = Field(..., min_length=1)
+    reorder_point: Optional[float] = None
+    safety_stock: Optional[float] = None
+    order_quantity: Optional[float] = None
+    service_level: Optional[float] = None
+    coverage_days: Optional[float] = None
+    notes: Optional[str] = None
+
+
+class SupplySourceModel(BaseModel):
+    supplier_id: str = Field(..., min_length=1)
+    name: Optional[str] = None
+    site: Optional[str] = None
+    lead_time_days: Optional[int] = Field(default=None, ge=0)
+    min_order_qty: Optional[float] = Field(default=None, ge=0)
+    max_order_qty: Optional[float] = Field(default=None, ge=0)
+    lot_size: Optional[float] = Field(default=None, ge=0)
+    transport_mode: Optional[str] = None
+    unit_cost: Optional[float] = Field(default=None, ge=0)
+    reliability_score: Optional[float] = Field(default=None, ge=0, le=1)
+
+
+class ReplenishmentEventModel(BaseModel):
+    period: str
+    planned_order_units: float = Field(..., ge=0)
+    expected_receipt_units: Optional[float] = Field(default=None, ge=0)
+    projected_on_hand: Optional[float] = None
+    notes: Optional[str] = None
+
+
+class SupplyNodePlanModel(BaseModel):
+    node_id: str = Field(..., min_length=1)
+    name: str = Field(..., min_length=1)
+    demand_profile: List[DemandPeriodModel] = Field(default_factory=list)
+    inventory_policy: InventoryPolicyModel
+    supply_sources: List[SupplySourceModel] = Field(default_factory=list)
+    schedule: List[ReplenishmentEventModel] = Field(default_factory=list)
+
+
+class RiskEntryModel(BaseModel):
+    risk_id: str = Field(..., min_length=1)
+    category: str = Field(..., min_length=1)
+    probability: Optional[float] = Field(default=None, ge=0, le=1)
+    impact: Optional[str] = None
+    mitigation: Optional[str] = None
+    owner: Optional[str] = None
+    due_date: Optional[str] = None
+
+
+class KpiTargetModel(BaseModel):
+    metric: str = Field(..., min_length=1)
+    target_value: Optional[float] = None
+    unit: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class SupplyPlanModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    sku: str
+    product_name: str
+    lifecycle_stage: Optional[str] = None
+    planning_horizon_start: str
+    planning_horizon_end: str
+    review_cadence: Optional[str] = None
+    status: SupplyPlanStatus = SupplyPlanStatus.DRAFT
+    owner: Optional[str] = None
+    version: int = 1
+    notes: Optional[str] = None
+    nodes: List[SupplyNodePlanModel] = Field(default_factory=list)
+    risks: List[RiskEntryModel] = Field(default_factory=list)
+    kpi_targets: List[KpiTargetModel] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+
+
+class SupplyPlanCreateRequest(BaseModel):
+    sku: str
+    product_name: str
+    planning_horizon_start: str
+    planning_horizon_end: str
+    lifecycle_stage: Optional[str] = None
+    review_cadence: Optional[str] = None
+    status: SupplyPlanStatus = SupplyPlanStatus.DRAFT
+    owner: Optional[str] = None
+    notes: Optional[str] = None
+    nodes: List[SupplyNodePlanModel] = Field(default_factory=list)
+    risks: List[RiskEntryModel] = Field(default_factory=list)
+    kpi_targets: List[KpiTargetModel] = Field(default_factory=list)
+
+
+class SupplyPlanUpdateRequest(BaseModel):
+    sku: Optional[str] = None
+    product_name: Optional[str] = None
+    lifecycle_stage: Optional[str] = None
+    planning_horizon_start: Optional[str] = None
+    planning_horizon_end: Optional[str] = None
+    review_cadence: Optional[str] = None
+    status: Optional[SupplyPlanStatus] = None
+    owner: Optional[str] = None
+    notes: Optional[str] = None
+    nodes: Optional[List[SupplyNodePlanModel]] = None
+    risks: Optional[List[RiskEntryModel]] = None
+    kpi_targets: Optional[List[KpiTargetModel]] = None

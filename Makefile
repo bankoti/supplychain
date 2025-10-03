@@ -8,7 +8,7 @@ ifeq ($(OS),Windows_NT)
 	PYTHON_BIN := $(VENV_BIN)/python.exe
 endif
 
-.PHONY: setup api ui test lint format clean docker
+.PHONY: setup api ui test lint format clean docker bootstrap
 
 setup:
 	$(PYTHON) -m venv $(VENV_DIR)
@@ -36,3 +36,10 @@ clean:
 
 docker:
 	cd infra/docker && docker compose up --build
+
+bootstrap: setup
+	cd frontend && npm install
+	$(PYTHON_BIN) -m pytest backend/tests -q
+	$(PYTHON_BIN) -m ruff check backend
+	$(PYTHON_BIN) -m mypy backend
+

@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api import forecast, inventory, bullwhip, kpi, plans
+from backend.api import bullwhip, forecast, inventory, kpi, plans, supply_plans
 
 app = FastAPI(title="SupplyChainOS API", version="0.1.0")
 
@@ -20,6 +20,7 @@ app.include_router(inventory.router, prefix="/inventory", tags=["inventory"])
 app.include_router(bullwhip.router, prefix="/bullwhip", tags=["bullwhip"])
 app.include_router(kpi.router, prefix="/kpi", tags=["kpi"])
 app.include_router(plans.router, prefix="/plans", tags=["plans"])
+app.include_router(supply_plans.router, prefix="/supply-plans", tags=["supply-plans"])
 
 
 @app.get("/health")

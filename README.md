@@ -47,12 +47,18 @@ SupplyChainOS is an open-source learning and experimentation platform for modern
 
 ## Developer Workflow
 ```
-make setup   # create virtualenv, install backend deps
-make api     # run FastAPI with automatic reload
-make ui      # install npm deps and start Vite dev server
-make test    # run backend pytest suite
-make lint    # run Ruff and mypy checks
+make bootstrap  # setup backend venv, install frontend deps, run smoke checks
+make setup      # create virtualenv, install backend deps
+make api        # run FastAPI with automatic reload
+make ui         # install npm deps and start Vite dev server
+make test       # run backend pytest suite
+make lint       # run Ruff and mypy checks
 ```
+
+## Project Documentation
+- `CONTRIBUTING.md` - onboarding steps, branching, testing, and PR checklist.
+- `CODE_OF_CONDUCT.md` - expectations for behaviour and how to report incidents.
+- `docs/adr/` - Architecture Decision Records, including `000-template.md` for new proposals.
 
 ## Contribution Guidelines
 - **Branching:** Use feature branches prefixed with your area, e.g. `feat/forecast-ensemble`, `fix/ui-loading-state`.
@@ -65,6 +71,6 @@ make lint    # run Ruff and mypy checks
   - Add or update unit tests for each feature (`backend/tests`).
   - Provide integration tests for new API contracts (`backend/tests/test_api_integration.py`).
   - Use sample data under `backend/data/sample_data` for deterministic reproducibility.
-- **Community:** Follow the MIT license, respect the Code of Conduct (TBD), and document major design decisions in ADRs or the project wiki.
+- **Community:** Follow the MIT license, adhere to the Code of Conduct (`CODE_OF_CONDUCT.md`), and document major design decisions under `docs/adr/`.
 
 Happy shipping!

@@ -7,6 +7,7 @@ import { DashboardPage } from "./pages/Dashboard"
 import { DemandPage } from "./pages/Demand"
 import { InventoryPage } from "./pages/Inventory"
 import { PlannerPage } from "./pages/Planner"
+import { SupplyPlansPage } from "./pages/SupplyPlans"
 import { WhatIfPage } from "./pages/WhatIf"
 
 function App(): JSX.Element {
@@ -15,6 +16,7 @@ function App(): JSX.Element {
       <Route element={<Layout />}>
         <Route index element={<PlannerPage />} />
         <Route path="planner" element={<PlannerPage />} />
+        <Route path="supply-plans" element={<SupplyPlansPage />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="demand" element={<DemandPage />} />
         <Route path="inventory" element={<InventoryPage />} />

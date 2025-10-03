@@ -8,6 +8,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { to: '/planner', label: 'Planner' },
+  { to: '/supply-plans', label: 'Supply Plans' },
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/demand', label: 'Demand' },
   { to: '/inventory', label: 'Inventory' },
