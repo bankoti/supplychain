@@ -52,5 +52,20 @@
         "description": "First task"
       }
     ]
+  },
+  {
+    "id": "test-plan",
+    "name": "test plan",
+    "description": "this is a test plan",
+    "created_at": "2025-10-03T17:56:51.908412+00:00",
+    "updated_at": "2025-10-03T17:57:10.450096+00:00",
+    "tasks": [
+      {
+        "id": "task-1759514230433",
+        "title": "taskA",
+        "status": "todo",
+        "description": "This is a test task A"
+      }
+    ]
   }
 ]

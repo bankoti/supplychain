@@ -95,6 +95,10 @@ export function SupplyPlansPage(): JSX.Element {
     }
   }, [plans, selectedPlanId])
 
+  useEffect(() => {
+    setNodeFormState(initialNodeFormState)
+  }, [selectedPlanId])
+
   const selectedPlanQuery = useQuery({
     queryKey: ['supply-plan', selectedPlanId],
     queryFn: () => fetchSupplyPlan(selectedPlanId ?? ''),
@@ -188,6 +192,52 @@ export function SupplyPlansPage(): JSX.Element {
       formState.planning_horizon_end.trim().length > 0
     )
   }, [formState])
+
+  const handleNodeInputChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = event.target
+    setNodeFormState((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleAddNode = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!selectedPlanId || !selectedPlan) {
+      return
+    }
+
+    const nodeId = nodeFormState.node_id.trim()
+    const nodeName = nodeFormState.name.trim()
+
+    if (!nodeId || !nodeName || duplicateNodeId) {
+      return
+    }
+
+    const inventoryPolicy = {
+      policy_type: nodeFormState.policy_type.trim() || 'qr',
+      reorder_point: toNumber(nodeFormState.reorder_point),
+      safety_stock: toNumber(nodeFormState.safety_stock),
+      order_quantity: toNumber(nodeFormState.order_quantity),
+      service_level: toNumber(nodeFormState.service_level),
+      coverage_days: toNumber(nodeFormState.coverage_days),
+      notes: nodeFormState.notes.trim() || undefined,
+    }
+
+    const newNode = {
+      node_id: nodeId,
+      name: nodeName,
+      demand_profile: [],
+      inventory_policy: inventoryPolicy,
+      supply_sources: [],
+      schedule: [],
+    }
+
+    const payload: SupplyPlanUpdatePayload = {
+      nodes: [...(selectedPlan.nodes ?? []), newNode],
+    }
+
+    updateMutation.mutate({ planId: selectedPlanId, payload })
+  }
 
 
   const deleteSelectedPlan = () => {
@@ -658,6 +708,17 @@ function formatDate(value: string): string {
     return value
   }
   return date.toLocaleDateString()
+}
+
+function toNumber(value: string): number | undefined {
+  if (!value.trim()) {
+    return undefined
+  }
+  const parsed = Number(value)
+  if (Number.isNaN(parsed)) {
+    return undefined
+  }
+  return parsed
 }
 
 function formatNumber(value: number): string {

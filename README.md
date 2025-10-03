@@ -73,4 +73,9 @@ make lint       # run Ruff and mypy checks
   - Use sample data under `backend/data/sample_data` for deterministic reproducibility.
 - **Community:** Follow the MIT license, adhere to the Code of Conduct (`CODE_OF_CONDUCT.md`), and document major design decisions under `docs/adr/`.
 
+
+Reference these following supply chain softwares to think about how to progress in the development: 
+Katana, MRPeasy,  Cin7, and Zoho 
+
+
 Happy shipping!
